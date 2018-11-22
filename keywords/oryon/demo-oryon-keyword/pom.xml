@@ -1,0 +1,52 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>ch.exense.examples.oryon</groupId>
+	<version>0.0.9</version>
+	<artifactId>demo-oryon-keyword</artifactId>
+	
+	<properties>
+		<oryon.version>1.5.1</oryon.version>
+		<step.version>3.8.0</step.version>
+		<junit.version>4.8.1</junit.version>
+	</properties>
+	
+	<repositories>
+		<repository>
+			<id>step-enterprise</id>
+			<url>https://nexus-enterprise.exense.ch/repository/step-enterprise/</url>
+		</repository>
+	</repositories>
+	
+	<dependencies>
+		<dependency>
+			<groupId>ch.exense.oryon</groupId>
+			<artifactId>oryon-client</artifactId>
+			<version>${oryon.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.exense.step</groupId>
+			<artifactId>script-dev-java</artifactId>
+			<version>${step.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
