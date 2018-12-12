@@ -30,6 +30,8 @@ import step.functions.Function;
 import step.functions.type.FunctionTypeException;
 import step.functions.type.SetupFunctionException;
 import step.plugins.java.GeneralScriptFunction;
+import step.plugins.planeditor.PlanParser;
+import step.repositories.parser.StepsParser.ParsingException;
 
 public class ControllerClientDemo {
 	
@@ -75,6 +77,26 @@ public class ControllerClientDemo {
 					.endBlock()
 					.build();
 	
+			// Run the plan on the controller
+			PlanRunnerResult result = client.getPlanRunners().getRemotePlanRunner().run(plan);
+			
+			// Wait for the plan execution to terminate and print the report tree to the standard output
+			result.waitForExecutionToTerminate().printTree();
+		}
+	}
+	
+	@Test
+	public void planParserDemo() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException, ParsingException {
+		PlanParser planParser = new PlanParser();
+		// Parse the plan in plan text format
+		Plan plan = planParser.parse("For 1 to 10 \n" +
+									 "Echo 'HELLO' \n" +
+									 "End");
+		
+		// Rename the plan
+		plan.getRoot().getAttributes().put("name", "My Testcase");
+		
+		try(ControllerClient client = new ControllerClient("http://step-enterprise-nightly.exense.ch", "admin", "init")) {
 			// Run the plan on the controller
 			PlanRunnerResult result = client.getPlanRunners().getRemotePlanRunner().run(plan);
 			

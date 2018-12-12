@@ -26,6 +26,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>ch.exense.step-enterprise</groupId>
+			<artifactId>dual-plan-editor</artifactId>
+			<version>${step.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>ch.exense.step</groupId>
 			<artifactId>java-plugin-def</artifactId>
 			<version>${step.version}</version>
