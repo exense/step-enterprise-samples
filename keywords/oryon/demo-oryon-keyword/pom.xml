@@ -2,9 +2,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>ch.exense.examples.oryon</groupId>
-	<version>0.0.9</version>
+	<groupId>ch.exense.oryon.examples</groupId>
 	<artifactId>demo-oryon-keyword</artifactId>
+	<version>0.0.9-SNAPSHOT</version>
 	
 	<properties>
 		<oryon.version>1.5.1</oryon.version>
