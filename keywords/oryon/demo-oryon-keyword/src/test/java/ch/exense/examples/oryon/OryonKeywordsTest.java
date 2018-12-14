@@ -21,7 +21,7 @@ public class OryonKeywordsTest {
 		context = KeywordRunner.getExecutionContext(properties, OryonKeywords.class);
 	}
 	
-	@Test
+	//@Test
 	public void test() throws Exception {
 		context.run("Login","{\"Username\":\"MyUser\"}");
 		OutputMessage output = context.run("Search","{\"Criteria\":\"My search criteria\"}");
