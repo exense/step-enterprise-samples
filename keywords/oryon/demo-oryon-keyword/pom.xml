@@ -14,12 +14,8 @@
 	
 	<repositories>
 		<repository>
-			<id>step-enterprise</id>
-			<url>https://nexus-enterprise.exense.ch/repository/step-enterprise/</url>
-		</repository>
-		<repository>
-			<id>oryon</id>
-			<url>https://nexus-enterprise.exense.ch/repository/oryon/</url>
+			<id>nexus-exense</id>
+			<url>https://nexus-enterprise.exense.ch/repository/exense/</url>
 		</repository>
 	</repositories>
 	

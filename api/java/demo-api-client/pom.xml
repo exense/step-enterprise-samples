@@ -9,11 +9,11 @@
 	<properties>
 		<step.version>3.10.0</step.version>
 		<junit.version>4.8.1</junit.version>
-	</properties>	
+	</properties>
 	
 	<repositories>
 		<repository>
-			<id>step-enterprise</id>
+			<id>nexus-exense</id>
 			<url>https://nexus-enterprise.exense.ch/repository/exense/</url>
 		</repository>
 	</repositories>
