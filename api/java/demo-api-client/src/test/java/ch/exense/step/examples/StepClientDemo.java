@@ -17,7 +17,8 @@ import org.bson.types.ObjectId;
 import org.junit.Test;
 
 import junit.framework.Assert;
-import step.client.ControllerClient;
+import step.artefacts.reports.TestCaseReportNode;
+import step.client.StepClient;
 import step.client.executions.RemoteExecutionFuture;
 import step.client.repository.StagingRepositoryClient;
 import step.client.repository.StagingRepositoryClient.StagingContext;
@@ -29,15 +30,15 @@ import step.core.plans.runner.PlanRunnerResult;
 import step.functions.Function;
 import step.functions.type.FunctionTypeException;
 import step.functions.type.SetupFunctionException;
+import step.plans.nl.parser.PlanParser;
 import step.plugins.java.GeneralScriptFunction;
-import step.plugins.planeditor.PlanParser;
 import step.repositories.parser.StepsParser.ParsingException;
 
-public class ControllerClientDemo {
+public class StepClientDemo {
 	
 	@Test
 	public void controllerClientDemo() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException {
-		try(ControllerClient client = new ControllerClient("http://step-enterprise-nightly.exense.ch", "admin", "init")) {
+		try(StepClient client = new StepClient("http://step-enterprise-nightly.exense.ch", "admin", "init")) {
 			
 			// Create a DemoKeyword (javascript) and upload it to the controller
 			Function keyword = uploadDemoKeyword(client);
@@ -66,7 +67,7 @@ public class ControllerClientDemo {
 
 	@Test
 	public void remotePlanRunnerDemo() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException {
-		try(ControllerClient client = new ControllerClient("http://step-enterprise-nightly.exense.ch", "admin", "init")) {
+		try(StepClient client = new StepClient("http://step-enterprise-nightly.exense.ch", "admin", "init")) {
 			// Create a DemoKeyword (javascript) and upload it to the controller
 			Function keyword = uploadDemoKeyword(client);
 			
@@ -96,7 +97,7 @@ public class ControllerClientDemo {
 		// Rename the plan
 		plan.getRoot().getAttributes().put("name", "My Testcase");
 		
-		try(ControllerClient client = new ControllerClient("http://step-enterprise-nightly.exense.ch", "admin", "init")) {
+		try(StepClient client = new StepClient("http://step-enterprise-nightly.exense.ch", "admin", "init")) {
 			// Run the plan on the controller
 			PlanRunnerResult result = client.getPlanRunners().getRemotePlanRunner().run(plan);
 			
@@ -107,7 +108,7 @@ public class ControllerClientDemo {
 	
 	@Test
 	public void isolatedExecutionDemo() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException {
-		try(ControllerClient client = new ControllerClient("http://step-enterprise-nightly.exense.ch", "admin", "init")) {
+		try(StepClient client = new StepClient("http://step-enterprise-nightly.exense.ch", "admin", "init")) {
 			StagingRepositoryClient stagingClient = client.getStagingRepositoryClient();
 			
 			// Create the staging context which creates an isolated context for the upload of execution scoped resources like Keywords, Resources, and Plans
@@ -140,16 +141,38 @@ public class ControllerClientDemo {
 		}
 	}
 	
+	@Test
+	public void runAnExistingPlan() throws IOException, TimeoutException, InterruptedException {
+		try(StepClient client = new StepClient("http://step-enterprise-nightly.exense.ch", "admin", "init")) {
+			// The ID of the plan to be executed
+			String planId = "theIdOfThePlanToBeExecuted";
+			
+			// Set the execution parameters (the drop-downs that are set on the execution screen in the UI)
+			Map<String, String> executionParameters = new HashMap<>();
+			executionParameters.put("env", "TEST");
+			
+			// Execute the plan
+			String executionId = client.getExecutionManager().execute(planId, executionParameters);
+			
+			// Wait for the execution to terminate and visit the report tree
+			client.getExecutionManager().getFuture(executionId).waitForExecutionToTerminate().visitReportNodes(node->{
+				if(node instanceof TestCaseReportNode) {
+					// Do somethind....
+				}
+			});
+		}
+	}
+	
 	public void remoteControllerManagementDemo() throws IOException {
-		try(ControllerClient client = new ControllerClient("http://controller.url", "user", "pwd")) {
+		try(StepClient client = new StepClient("http://controller.url", "user", "pwd")) {
 			// Shutdown the controller gracefully
-			client.shutdownController();
+			client.getControllerServicesClient().shutdownController();
 		}
 	}
 
-	protected GeneralScriptFunction uploadDemoKeyword(ControllerClient client) throws SetupFunctionException, FunctionTypeException {
+	protected GeneralScriptFunction uploadDemoKeyword(StepClient client) throws SetupFunctionException, FunctionTypeException {
 		// Upload the javascript code of the keyword
-		String resourceId = client.getResourceManager().upload(new File(this.getClass().getResource("DemoKeyword.js").getFile())).getAttachmentId();
+		String resourceId = client.getResourceManager().upload(new File(this.getClass().getResource("DemoKeyword.js").getFile())).getResourceId();
 		
 		GeneralScriptFunction f = createDemoKeyword(resourceId);
 		
