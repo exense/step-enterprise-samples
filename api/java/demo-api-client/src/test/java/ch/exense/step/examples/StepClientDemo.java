@@ -18,6 +18,7 @@ import org.junit.Test;
 
 import junit.framework.Assert;
 import step.artefacts.reports.TestCaseReportNode;
+import step.attachments.FileResolver;
 import step.client.StepClient;
 import step.client.executions.RemoteExecutionFuture;
 import step.client.repository.StagingRepositoryClient;
@@ -192,7 +193,7 @@ public class StepClientDemo {
 		
 		f.setId(new ObjectId());
 		f.setScriptLanguage(new DynamicValue<String>("javascript"));
-		f.setScriptFile(new DynamicValue<String>("attachment:" + resourceId));
+		f.setScriptFile(new DynamicValue<String>(FileResolver.RESOURCE_PREFIX + resourceId));
 		f.setAttributes(attributes);
 		
 		// Empty keyword schema
