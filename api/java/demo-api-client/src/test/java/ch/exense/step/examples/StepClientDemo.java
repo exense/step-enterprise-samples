@@ -142,9 +142,8 @@ public class StepClientDemo {
 		}
 	}
 	
-	@Test
 	public void runAnExistingPlan() throws IOException, TimeoutException, InterruptedException {
-		try(StepClient client = new StepClient("http://step-enterprise-nightly.exense.ch", "admin", "init")) {
+		try(StepClient client = new StepClient("http://controller.url", "user", "pwd")) {
 			// The ID of the plan to be executed
 			String planId = "theIdOfThePlanToBeExecuted";
 			
