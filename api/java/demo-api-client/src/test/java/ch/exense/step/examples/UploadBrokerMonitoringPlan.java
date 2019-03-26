@@ -5,7 +5,6 @@ import static step.planbuilder.BaseArtefacts.sequence;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
-import org.apache.poi.hssf.record.SCLRecord;
 import org.junit.Test;
 
 import junit.framework.Assert;
