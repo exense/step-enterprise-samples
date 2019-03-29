@@ -1,7 +1,8 @@
 package ch.exense.step.examples;
 
+import static step.planbuilder.BaseArtefacts.for_;
 import static step.planbuilder.BaseArtefacts.sequence;
-import static step.planbuilder.FunctionPlanBuilder.keywordById;
+import static step.planbuilder.FunctionArtefacts.keywordById;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import org.bson.types.ObjectId;
 import org.junit.Test;
 
 import junit.framework.Assert;
+import step.artefacts.Echo;
 import step.artefacts.reports.TestCaseReportNode;
 import step.attachments.FileResolver;
 import step.client.StepClient;
@@ -37,9 +39,13 @@ import step.repositories.parser.StepsParser.ParsingException;
 
 public class StepClientDemo {
 	
+	String collectorUrl = "http://...";
+	String username = "admin";
+	String password = "init";
+	
 	@Test
 	public void controllerClientDemo() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException {
-		try(StepClient client = new StepClient("http://step-enterprise-nightly.exense.ch", "admin", "init")) {
+		try(StepClient client = new StepClient(collectorUrl, username, password)) {
 			
 			// Create a DemoKeyword (javascript) and upload it to the controller
 			Function keyword = uploadDemoKeyword(client);
@@ -68,7 +74,7 @@ public class StepClientDemo {
 
 	@Test
 	public void remotePlanRunnerDemo() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException {
-		try(StepClient client = new StepClient("http://step-enterprise-nightly.exense.ch", "admin", "init")) {
+		try(StepClient client = new StepClient(collectorUrl, username, password)) {
 			// Create a DemoKeyword (javascript) and upload it to the controller
 			Function keyword = uploadDemoKeyword(client);
 			
@@ -98,7 +104,7 @@ public class StepClientDemo {
 		// Rename the plan
 		plan.getRoot().getAttributes().put("name", "My Testcase");
 		
-		try(StepClient client = new StepClient("http://step-enterprise-nightly.exense.ch", "admin", "init")) {
+		try(StepClient client = new StepClient(collectorUrl, username, password)) {
 			// Run the plan on the controller
 			PlanRunnerResult result = client.getPlanRunners().getRemotePlanRunner().run(plan);
 			
@@ -109,7 +115,7 @@ public class StepClientDemo {
 	
 	@Test
 	public void isolatedExecutionDemo() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException {
-		try(StepClient client = new StepClient("http://step-enterprise-nightly.exense.ch", "admin", "init")) {
+		try(StepClient client = new StepClient(collectorUrl, username, password)) {
 			StagingRepositoryClient stagingClient = client.getStagingRepositoryClient();
 			
 			// Create the staging context which creates an isolated context for the upload of execution scoped resources like Keywords, Resources, and Plans
@@ -144,9 +150,19 @@ public class StepClientDemo {
 	
 	@Test
 	public void runAnExistingPlan() throws IOException, TimeoutException, InterruptedException {
-		try(StepClient client = new StepClient("http://step-enterprise-nightly.exense.ch", "admin", "init")) {
+		try(StepClient client = new StepClient(collectorUrl, username, password)) {
+			// Create a plan
+			Plan plan = PlanBuilder.create()
+						.startBlock(for_(1, 10))
+							.add(new Echo())
+						.endBlock()
+						.build();
+			
+			// upload it to the controller
+			client.getPlanRepository().save(plan);
+			
 			// The ID of the plan to be executed
-			String planId = "theIdOfThePlanToBeExecuted";
+			String planId = plan.getId();
 			
 			// Set the execution parameters (the drop-downs that are set on the execution screen in the UI)
 			Map<String, String> executionParameters = new HashMap<>();
