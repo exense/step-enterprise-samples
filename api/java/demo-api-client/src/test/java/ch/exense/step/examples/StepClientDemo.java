@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import javax.json.Json;
+import javax.json.JsonObject;
 
 import org.bson.types.ObjectId;
 import org.junit.Test;
@@ -29,8 +30,14 @@ import step.core.plans.Plan;
 import step.core.plans.builder.PlanBuilder;
 import step.core.plans.runner.PlanRunnerResult;
 import step.functions.Function;
+import step.functions.execution.FunctionExecutionService;
+import step.functions.execution.FunctionExecutionServiceException;
+import step.functions.io.Input;
+import step.functions.io.Output;
 import step.functions.type.FunctionTypeException;
 import step.functions.type.SetupFunctionException;
+import step.grid.TokenWrapper;
+import step.grid.tokenpool.Interest;
 import step.plans.nl.parser.PlanParser;
 import step.plugins.java.GeneralScriptFunction;
 import step.repositories.parser.StepsParser.ParsingException;
@@ -160,6 +167,37 @@ public class StepClientDemo {
 					// Do somethind....
 				}
 			});
+		}
+	}
+	
+	@Test
+	public void functionManagerDemo() throws Exception {
+		try(StepClient stepClient = new StepClient("https://step-public-demo.stepcloud.ch", "admin", "public")) {
+			// Create a DemoKeyword (javascript) and upload it to the controller
+			Function keyword = uploadDemoKeyword(stepClient);
+			
+			FunctionExecutionService functionExecutionService = stepClient.getFunctionExecutionService();
+			
+			// Select an agent token from the GRID
+			Map<String, Interest> tokenSelectionCriteria = new HashMap<>();
+			TokenWrapper tokenHandle = functionExecutionService.getTokenHandle(null, tokenSelectionCriteria, true);
+			
+			try {
+				// Build the input object
+				Input<JsonObject> input = new Input<JsonObject>();
+				// Set the name of the Keyword
+				input.setFunction("Echo");
+				input.setProperties(new HashMap<>());
+				input.setPayload(Json.createObjectBuilder().build());
+				
+				// call the keyword executing it on the remote agent
+				Output<JsonObject> result = functionExecutionService.callFunction(tokenHandle, keyword, input, JsonObject.class);
+				// Assert that the Keyword has been executed properly
+				Assert.assertEquals("OK :)", result.getPayload().getString("Result"));			
+			} finally {
+				// Return the agent token to the GRID
+				functionExecutionService.returnTokenHandle(tokenHandle);
+			}
 		}
 	}
 	
