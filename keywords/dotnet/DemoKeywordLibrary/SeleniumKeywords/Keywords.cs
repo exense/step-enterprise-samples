@@ -49,7 +49,7 @@ namespace STEP
 
                 driver.Url = "http://www.google.com";
 
-                IWebElement searchInput = driver.FindElement(By.Id("lst-ib"));
+                IWebElement searchInput = driver.FindElement(By.Name("q"));
 
                 String searchString = (string)input["search"];
                 searchInput.SendKeys(searchString + Keys.Enter);
@@ -61,7 +61,11 @@ namespace STEP
                 {
                     output.add(result.Text, result.FindElement(By.XPath("..//cite")).Text);
                 }
+                Screenshot ss = ((ITakesScreenshot)driver).GetScreenshot();
 
+                string screenshot = ss.AsBase64EncodedString;
+                byte[] screenshotAsByteArray = ss.AsByteArray;
+                output.addAttachment(AttachmentBuilder.generateAttachmentFromByteArray(screenshotAsByteArray,"screenshot.png"));
             }
             else
             {
