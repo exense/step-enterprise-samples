@@ -22,7 +22,7 @@ namespace AutoItKeywords
                 output.setError("Error stating Notepad");
                 return;
             }
-            AutoItX.Ge
+
             if (AutoItX.WinWaitActive("Untitled", timeout: 10) != 1)
             {
                 output.setError("Error waiting for the Notepad window");
@@ -30,9 +30,7 @@ namespace AutoItKeywords
             }
 
             AutoItX.Send("I'm in notepad");
-
-            //Thread.Sleep(100000);
-
+            
             if (AutoItX.WinKill("*Untitled") != 1)
             {
                 output.setError("Error closing the Notepad window");
