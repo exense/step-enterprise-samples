@@ -77,9 +77,7 @@ namespace AutoItKeywords
         public void NotepadTest()
         {
             var output = runner.run("Open Notepad, edit and close", @"{}");
-            if (output.error != null)
-                Console.WriteLine(output.error.msg);
-            Assert.Null(output.error);
+            Assert.IsNull(output.error, (output.error == null) ? "" : "Error was: " + output.error.msg);
         }
     }
 }

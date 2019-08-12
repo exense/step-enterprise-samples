@@ -28,10 +28,12 @@ namespace TemplateSeleniumLibrary
         [TestCase()]
         public void OpenChromeTest()
         {
-            runner.run("Open Chrome", @"{}", new Dictionary<string, string>() { { "headless", @"false" } });
-            var output = runner.run("Search in google", @"{search:'exense'}");
+            var output = runner.run("Open Chrome", @"{}", new Dictionary<string, string>() { { "headless", @"false" } });
+            Assert.IsNull(output.error, (output.error == null) ? "" : "Error was: " + output.error.msg);
 
-            Assert.AreEqual("www.exense.ch/", (string)output.payload["exense: Home"]);
+            output = runner.run("Search in google", @"{search:'exense'}");
+            Assert.IsNull(output.error, (output.error == null) ? "" : "Error was: " + output.error.msg);
+            Assert.AreEqual("https://www.exense.ch/", (string)output.payload["exense: Home"]);
         }
     }
 }
