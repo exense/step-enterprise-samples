@@ -3,49 +3,55 @@ using NUnit.Framework;
 using ScriptDev;
 using StepApi;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace AutoItKeywords
 {
     public class Keywords : StepApi.AbstractScript
     {
+        private IntPtr GetProcessHandel(int pid)
+        {
+            Process proc;
+            try
+            {
+                proc = Process.GetProcessById(pid);
+            } catch (Exception)
+            {
+                return new IntPtr(0);
+            }
+            // wait for the win handle:
+            if (!proc.WaitForInputIdle(milliseconds : 10000))
+            {
+                return new IntPtr(0);
+            }
+            return proc.MainWindowHandle;
+        }
+
         [Keyword(name = "Open Notepad, edit and close")]
         public void EditInNotepad()
         {
-            int pid = 0;
-            if ((pid = AutoItX.Run("notepad.exe", ".")) == 0)
+            IntPtr winHandle;
+            int pid = AutoItX.Run("notepad.exe", ".");
+            winHandle = GetProcessHandel(pid);
+
+            if (AutoItX.WinWaitActive(winHandle, timeout: 10) != 1)
             {
-                output.setError("Error stating Notepad");
+                output.setError("Error waiting for the Notepad window .");
                 return;
             }
 
-            if (AutoItX.WinWaitActive("Untitled", timeout: 10) != 1)
-            {
-                output.setError("Error waiting for the Notepad window");
-                return;
-            }
+            AutoItX.Send("This is an AutoIt test using step");
 
-            AutoItX.Send("I'm in notepad");
-            
-            if (AutoItX.WinKill("*Untitled") != 1)
+            if (AutoItX.WinKill(winHandle) != 1)
             {
                 output.setError("Error closing the Notepad window");
                 return;
             }
 
-            if (AutoItX.WinWaitClose("*Untitled", timeout: 10) != 1)
+            if (AutoItX.WinWaitClose(winHandle, timeout: 10) != 1)
             {
                 output.setError("Error waiting for the Notepad window to close");
-                return;
-            }
-
-            if (AutoItX.ProcessWaitClose(pid.ToString(), timeout: 10) != 1)
-            {
-                output.setError("Error waiting for the Notepad process to close");
                 return;
             }
         }
@@ -68,9 +74,11 @@ namespace AutoItKeywords
         }
 
         [TestCase()]
-        public void AutoItTest()
+        public void NotepadTest()
         {
             var output = runner.run("Open Notepad, edit and close", @"{}");
+            if (output.error != null)
+                Console.WriteLine(output.error.msg);
             Assert.Null(output.error);
         }
     }
