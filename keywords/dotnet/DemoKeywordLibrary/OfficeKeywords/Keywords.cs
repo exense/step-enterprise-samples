@@ -41,6 +41,22 @@ namespace OfficeTest
         }
 
         [Keyword]
+        public void CloseOutlook()
+        {
+            if (Process.GetProcessesByName("OUTLOOK").Count() > 0)
+            {
+                Outlook.Application outlook;
+                if ((outlook = GetApplication()) == null)
+                {
+                    Output.SetBusinessError("Outlook seems to not be installed on this machine. Aborting");
+                    return;
+                }
+
+                outlook.Quit();
+            }
+        }
+
+        [Keyword]
         public void ReadEmails()
         {
             string search = Input["search"].ToString();
@@ -136,6 +152,9 @@ namespace OfficeTest
             Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
 
             Output = Runner.Run("ReadEmails", "{search:'This is a test'}");
+            Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
+
+            Output = Runner.Run("CloseOutlook");
             Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
         }
     }
