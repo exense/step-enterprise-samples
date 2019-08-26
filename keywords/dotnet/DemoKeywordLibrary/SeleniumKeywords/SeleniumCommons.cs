@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OpenQA.Selenium;
-using StepApi;
+﻿using OpenQA.Selenium;
+using Step.Functions.IO;
 
-namespace SeleniumCommons
+namespace SeleniumTest
 {
-    public class Wrapper : Closeable
+    public class Wrapper : ICloseable
     {
         public IWebDriver driver;
 
@@ -17,7 +12,7 @@ namespace SeleniumCommons
             this.driver = driver;
         }
 
-        public void close()
+        public void Close()
         {
             if (driver != null)
             {

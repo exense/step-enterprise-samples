@@ -62,11 +62,14 @@
     <Reference Include="nunit.framework, Version=3.12.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.12.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="ScriptDev, Version=3.11.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ScriptDev.3.11.0\lib\net46\ScriptDev.dll</HintPath>
+    <Reference Include="StepApiFunction, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StepApiFunction.1.0.0\lib\net46\StepApiFunction.dll</HintPath>
     </Reference>
-    <Reference Include="StepApi, Version=3.11.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\StepApi.3.11.0\lib\net46\StepApi.dll</HintPath>
+    <Reference Include="StepApiKeyword, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StepApiKeyword.1.0.0\lib\net46\StepApiKeyword.dll</HintPath>
+    </Reference>
+    <Reference Include="StepApiReporting, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StepApiReporting.1.0.0\lib\net46\StepApiReporting.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -99,7 +102,6 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\NUnit.3.12.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.12.0\build\NUnit.props'))" />
     <Error Condition="!Exists('..\packages\Selenium.Chrome.WebDriver.76.0.0\build\Selenium.Chrome.WebDriver.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Selenium.Chrome.WebDriver.76.0.0\build\Selenium.Chrome.WebDriver.targets'))" />
   </Target>
   <Import Project="..\packages\Selenium.Chrome.WebDriver.76.0.0\build\Selenium.Chrome.WebDriver.targets" Condition="Exists('..\packages\Selenium.Chrome.WebDriver.76.0.0\build\Selenium.Chrome.WebDriver.targets')" />

@@ -1,14 +1,12 @@
 ﻿using AutoIt;
 using NUnit.Framework;
-using ScriptDev;
-using StepApi;
+using Step.Handlers.NetHandler;
 using System;
 using System.Diagnostics;
-using System.Threading;
 
-namespace AutoItKeywords
+namespace AutoItTest
 {
-    public class Keywords : StepApi.AbstractScript
+    public class Keywords : AbstractKeyword
     {
         private IntPtr GetProcessHandel(int pid)
         {
@@ -28,7 +26,7 @@ namespace AutoItKeywords
             return proc.MainWindowHandle;
         }
 
-        [Keyword(name = "Open Notepad, edit and close")]
+        [Keyword(Name = "Open Notepad, edit and close")]
         public void EditInNotepad()
         {
             IntPtr winHandle;
@@ -37,7 +35,7 @@ namespace AutoItKeywords
 
             if (AutoItX.WinWaitActive(winHandle, timeout: 10) != 1)
             {
-                output.setError("Error waiting for the Notepad window .");
+                Output.SetError("Error waiting for the Notepad window .");
                 return;
             }
 
@@ -45,13 +43,13 @@ namespace AutoItKeywords
 
             if (AutoItX.WinKill(winHandle) != 1)
             {
-                output.setError("Error closing the Notepad window");
+                Output.SetError("Error closing the Notepad window");
                 return;
             }
 
             if (AutoItX.WinWaitClose(winHandle, timeout: 10) != 1)
             {
-                output.setError("Error waiting for the Notepad window to close");
+                Output.SetError("Error waiting for the Notepad window to close");
                 return;
             }
         }
@@ -59,25 +57,25 @@ namespace AutoItKeywords
 
     public class AutoItKeywordsTests
     {
-        ScriptRunner runner;
+        ExecutionContext Runner;
 
         [SetUp]
         public void Init()
         {
-            runner = new ScriptRunner(typeof(Keywords));
+            Runner = KeywordRunner.GetExecutionContext(typeof(Keywords));
         }
 
         [TearDown]
-        public void tearDown()
+        public void TearDown()
         {
-            runner.close();
+            Runner.Close();
         }
 
         [TestCase()]
         public void NotepadTest()
         {
-            var output = runner.run("Open Notepad, edit and close", @"{}");
-            Assert.IsNull(output.error, (output.error == null) ? "" : "Error was: " + output.error.msg);
+            var output = Runner.Run("Open Notepad, edit and close", @"{}");
+            Assert.IsNull(output.Error, (output.Error == null) ? "" : "Error was: " + output.Error.Msg);
         }
     }
 }

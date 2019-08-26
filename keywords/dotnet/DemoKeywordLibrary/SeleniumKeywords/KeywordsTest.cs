@@ -1,39 +1,36 @@
 ﻿using NUnit.Framework;
-using ScriptDev;
-using STEP;
-using System;
+using Step.Functions.IO;
+using Step.Handlers.NetHandler;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace TemplateSeleniumLibrary
+namespace SeleniumTest
 {
     public class KeywordsTests
     {
-        ScriptRunner runner;
+        ExecutionContext Runner;
+        Output Output;
 
         [SetUp]
         public void Init()
         {
-            runner = new ScriptRunner(typeof(Keywords));
+            Runner = KeywordRunner.GetExecutionContext(typeof(Keywords));
         }
 
         [TearDown]
-        public void tearDown()
+        public void TearDown()
         {
-            runner.close();
+            Runner.Close();
         }
 
         [TestCase()]
         public void OpenChromeTest()
         {
-            var output = runner.run("Open Chrome", @"{}", new Dictionary<string, string>() { { "headless", @"false" } });
-            Assert.IsNull(output.error, (output.error == null) ? "" : "Error was: " + output.error.msg);
+            Output = Runner.Run("Open Chrome", @"{}", new Dictionary<string, string>() { { "headless", @"false" } });
+            Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
 
-            output = runner.run("Search in google", @"{search:'exense'}");
-            Assert.IsNull(output.error, (output.error == null) ? "" : "Error was: " + output.error.msg);
-            Assert.AreEqual("https://www.exense.ch/", (string)output.payload["exense: Home"]);
+            Output = Runner.Run("Search in google", @"{search:'exense'}");
+            Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
+            Assert.AreEqual("https://www.exense.ch", (string)Output.Payload["exense: Home"]);
         }
     }
 }

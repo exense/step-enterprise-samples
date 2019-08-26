@@ -1,15 +1,14 @@
-﻿using StepApi;
-using ScriptDev;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using System.Diagnostics;
 using System.Linq;
 using System;
-using System.Threading;
+using Step.Handlers.NetHandler;
+using Step.Functions.IO;
 
-namespace OfficeKeywords
+namespace OfficeTest
 {
-    public class Keywords : StepApi.AbstractScript
+    public class Keywords : AbstractKeyword
     {
         private Outlook.Application GetApplication()
         {
@@ -30,7 +29,7 @@ namespace OfficeKeywords
                 Outlook.Application outlook;
                 if ((outlook = GetApplication()) == null)
                 {
-                    output.setBusinessError("Outlook seems to not be installed on this machine. Aborting");
+                    Output.SetBusinessError("Outlook seems to not be installed on this machine. Aborting");
                     return;
                 }
 
@@ -44,12 +43,12 @@ namespace OfficeKeywords
         [Keyword]
         public void ReadEmails()
         {
-            string search = input["search"].ToString();
+            string search = Input["search"].ToString();
 
             Outlook.Application outlook;
             if ((outlook = GetApplication()) == null)
             {
-                output.setBusinessError("Outlook seems to not be installed on this machine. Aborting");
+                Output.SetBusinessError("Outlook seems to not be installed on this machine. Aborting");
                 return;
             }
 
@@ -82,7 +81,7 @@ namespace OfficeKeywords
             Outlook.Application outlook;
             if ((outlook = GetApplication()) == null)
             {
-                output.setBusinessError("Outlook seems to not be installed on this machine. Aborting");
+                Output.SetBusinessError("Outlook seems to not be installed on this machine. Aborting");
                 return;
             }
 
@@ -94,50 +93,50 @@ namespace OfficeKeywords
 
             mail.To = outlook.Session.CurrentUser.Address;
 
-            mail.Subject = input["subject"].ToString();
+            mail.Subject = Input["subject"].ToString();
 
             mail.Body = "This is a test";
 
             mail.Send();
 
-            while (!received) Thread.Sleep(500);
+            while (!received) System.Threading.Thread.Sleep(500);
         }
     }
 
     public class KeywordsTests
     {
-        ScriptRunner runner;
-        Output output;
+        ExecutionContext Runner;
+        Output Output;
 
         [SetUp]
         public void Init()
         {
-            runner = new ScriptRunner(typeof(Keywords));
+            Runner = KeywordRunner.GetExecutionContext(typeof(Keywords));
         }
-
+        
         [TearDown]
         public void TearDown()
         {
-            runner.close();
+            Runner.Close();
         }
 
         [TestCase()]
         public void SendEmailTest()
         {
-            output = runner.run("StartOutlook");
-            Assert.IsNull(output.error, (output.error == null) ? "" : "Error was: " + output.error.msg);
+            Output = Runner.Run("StartOutlook");
+            Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
 
-            output = runner.run("SendEmail", "{subject:'This is a test - email 1'}");
-            Assert.IsNull(output.error, (output.error == null) ? "" : "Error was: " + output.error.msg);
+            Output = Runner.Run("SendEmail", "{subject:'This is a test - email 1'}");
+            Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
 
-            output = runner.run("SendEmail", "{subject:'This is a test - email 2'}");
-            Assert.IsNull(output.error, (output.error == null) ? "" : "Error was: " + output.error.msg);
+            Output = Runner.Run("SendEmail", "{subject:'This is a test - email 2'}");
+            Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
 
-            output = runner.run("SendEmail", "{subject:'This is a test - email 3'}");
-            Assert.IsNull(output.error, (output.error == null) ? "" : "Error was: " + output.error.msg);
+            Output = Runner.Run("SendEmail", "{subject:'This is a test - email 3'}");
+            Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
 
-            output = runner.run("ReadEmails", "{search:'This is a test'}");
-            Assert.IsNull(output.error, (output.error == null) ? "" : "Error was: " + output.error.msg);
+            Output = Runner.Run("ReadEmails", "{search:'This is a test'}");
+            Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
         }
     }
 }
