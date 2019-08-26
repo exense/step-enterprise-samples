@@ -8,8 +8,8 @@
     <ProjectGuid>{BFE7AD27-6C92-4225-83D7-A02B330080F0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TemplateSeleniumLibrary</RootNamespace>
-    <AssemblyName>TemplateSeleniumLibrary</AssemblyName>
+    <RootNamespace>SeleniumKeywords</RootNamespace>
+    <AssemblyName>SeleniumKeywords</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
