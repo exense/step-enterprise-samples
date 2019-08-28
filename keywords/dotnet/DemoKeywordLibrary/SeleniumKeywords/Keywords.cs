@@ -9,21 +9,36 @@ namespace STEP
 {
     public class Keywords : StepApi.AbstractScript
     {
+        [Keyword(name = "Open Chrome and search in Google")]
+        public void OpenChromeAndSearchInGoogle()
+        {
+            ChromeDriver driver = createDriver();
+            googleSearch(driver);
+            driver.Quit();
+        }
+
+
         [Keyword(name = "Open Chrome")]
         public void OpenChrome()
+        {
+            ChromeDriver driver = createDriver();
+
+            session.put("driver", new Wrapper(driver));
+        }
+
+        private ChromeDriver createDriver()
         {
             ChromeDriver driver = new ChromeDriver();
 
             ChromeOptions options = new ChromeOptions();
-            bool headless = Boolean.Parse(properties["headless"]);
-            if (headless)
+            if (properties.ContainsKey("headless") && Boolean.Parse(properties["headless"]))
             {
                 options.AddArguments(new string[] { "headless", "disable-infobars", "disable-gpu", "no-sandbox" });
             }
 
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 
-            session.put("driver", new Wrapper(driver));
+            return driver;
         }
 
         [Keyword(name = "Navigate to URL")]
@@ -40,6 +55,11 @@ namespace STEP
         {
             IWebDriver driver = getDriver();
 
+            googleSearch(driver);
+        }
+
+        private void googleSearch(IWebDriver driver)
+        {
             if (input["search"] != null)
             {
                 if (driver == null)
@@ -48,8 +68,8 @@ namespace STEP
                 }
 
                 driver.Url = "http://www.google.com";
-
-                IWebElement searchInput = driver.FindElement(By.Id("lst-ib"));
+                
+                IWebElement searchInput = driver.FindElement(By.XPath("//input[@name='q']"));
 
                 String searchString = (string)input["search"];
                 searchInput.SendKeys(searchString + Keys.Enter);
@@ -68,7 +88,6 @@ namespace STEP
                 throw new Exception("Input parameter 'search' not defined");
             }
         }
-
 
         private IWebDriver getDriver()
         {
