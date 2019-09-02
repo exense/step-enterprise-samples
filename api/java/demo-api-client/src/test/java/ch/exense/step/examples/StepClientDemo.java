@@ -250,10 +250,7 @@ public class StepClientDemo {
 				"MyCustomKeyword someInput=\"hello\" \n" +
 				"Assert yourStringInputWas = \"hello\" \n" +
 				"End");
-
-		//Instantiate a local client
-		StepClient client = new StepClient();
-		
+	
 		// Run the plan locally by pointing to the class(es) containing the required keyword(s)
 		PlanRunnerResult result = new LocalPlanRunner(MyCustomKeyword.class).run(plan);
 
