@@ -26,11 +26,11 @@ namespace SeleniumTest
         public void OpenChromeTest()
         {
             Output = Runner.Run("Open Chrome", @"{}", new Dictionary<string, string>() { { "headless", @"false" } });
-            Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
+            Assert.IsNull(Output.error, (Output.error == null) ? "" : "Error was: " + Output.error.msg);
 
             Output = Runner.Run("Search in google", @"{search:'exense'}");
-            Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
-            Assert.AreEqual("https://www.exense.ch", (string)Output.Payload["exense: Home"]);
+            Assert.IsNull(Output.error, (Output.error == null) ? "" : "Error was: " + Output.error.msg);
+            Assert.AreEqual("https://www.exense.ch", (string)Output.payload["exense: Home"]);
         }
     }
 }

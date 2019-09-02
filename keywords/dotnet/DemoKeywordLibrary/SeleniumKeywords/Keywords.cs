@@ -9,13 +9,13 @@ namespace SeleniumTest
 {
     public class Keywords : AbstractKeyword
     {
-        [Keyword(Name = "Open Chrome")]
+        [Keyword(name = "Open Chrome")]
         public void OpenChrome()
         {
             ChromeDriver driver = new ChromeDriver();
 
             ChromeOptions options = new ChromeOptions();
-            bool headless = Boolean.Parse(Properties["headless"]);
+            bool headless = Boolean.Parse(properties["headless"]);
             if (headless)
             {
                 options.AddArguments(new string[] { "headless", "disable-infobars", "disable-gpu", "no-sandbox" });
@@ -23,24 +23,24 @@ namespace SeleniumTest
 
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 
-            Session.Put("driver", new Wrapper(driver));
+            session.Put("driver", new Wrapper(driver));
         }
 
-        [Keyword(Name = "Navigate to URL")]
+        [Keyword(name = "Navigate to URL")]
         public void Navigate()
         {
             IWebDriver driver = GetDriver();
-            Output.StartMeasure("Navigate");
-            driver.Url = (string)Properties["url_exense"];
-            Output.StopMeasure();
+            output.StartMeasure("Navigate");
+            driver.Url = (string)properties["url_exense"];
+            output.StopMeasure();
         }
 
-        [Keyword(Name = "Search in google")]
+        [Keyword(name = "Search in google")]
         public void SearchInGoogle()
         {
             IWebDriver driver = GetDriver();
 
-            if (Input["search"] != null)
+            if (input["search"] != null)
             {
                 if (driver == null)
                 {
@@ -51,7 +51,7 @@ namespace SeleniumTest
 
                 IWebElement searchInput = driver.FindElement(By.Name("q"));
 
-                String searchString = (string)Input["search"];
+                String searchString = (string)input["search"];
                 searchInput.SendKeys(searchString + Keys.Enter);
 
                 IWebElement resultCountDiv = driver.FindElement(By.XPath("//div/nobr"));
@@ -59,13 +59,13 @@ namespace SeleniumTest
                 ICollection<IWebElement> resultHeaders = driver.FindElements(By.XPath("//div[@class='r']//h3"));
                 foreach (IWebElement result in resultHeaders)
                 {
-                    Output.Add(result.Text, result.FindElement(By.XPath("..//cite")).Text);
+                    output.Add(result.Text, result.FindElement(By.XPath("..//cite")).Text);
                 }
                 Screenshot ss = ((ITakesScreenshot)driver).GetScreenshot();
 
                 string screenshot = ss.AsBase64EncodedString;
                 byte[] screenshotAsByteArray = ss.AsByteArray;
-                Output.AddAttachment(AttachmentHelper.GenerateAttachmentFromByteArray(screenshotAsByteArray,"screenshot.png"));
+                output.AddAttachment(AttachmentHelper.GenerateAttachmentFromByteArray(screenshotAsByteArray,"screenshot.png"));
             }
             else
             {
@@ -76,7 +76,7 @@ namespace SeleniumTest
 
         private IWebDriver GetDriver()
         {
-            Wrapper wrapper = (Wrapper)Session.Get("driver");
+            Wrapper wrapper = (Wrapper)session.Get("driver");
 
             IWebDriver driver = wrapper.driver;
             return driver;

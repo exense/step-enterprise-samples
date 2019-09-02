@@ -29,7 +29,7 @@ namespace OfficeTest
                 Outlook.Application outlook;
                 if ((outlook = GetApplication()) == null)
                 {
-                    Output.SetBusinessError("Outlook seems to not be installed on this machine. Aborting");
+                    output.SetBusinessError("Outlook seems to not be installed on this machine. Aborting");
                     return;
                 }
 
@@ -48,7 +48,7 @@ namespace OfficeTest
                 Outlook.Application outlook;
                 if ((outlook = GetApplication()) == null)
                 {
-                    Output.SetBusinessError("Outlook seems to not be installed on this machine. Aborting");
+                    output.SetBusinessError("Outlook seems to not be installed on this machine. Aborting");
                     return;
                 }
 
@@ -59,12 +59,12 @@ namespace OfficeTest
         [Keyword]
         public void ReadEmails()
         {
-            string search = Input["search"].ToString();
+            string search = input["search"].ToString();
 
             Outlook.Application outlook;
             if ((outlook = GetApplication()) == null)
             {
-                Output.SetBusinessError("Outlook seems to not be installed on this machine. Aborting");
+                output.SetBusinessError("Outlook seems to not be installed on this machine. Aborting");
                 return;
             }
 
@@ -97,7 +97,7 @@ namespace OfficeTest
             Outlook.Application outlook;
             if ((outlook = GetApplication()) == null)
             {
-                Output.SetBusinessError("Outlook seems to not be installed on this machine. Aborting");
+                output.SetBusinessError("Outlook seems to not be installed on this machine. Aborting");
                 return;
             }
 
@@ -109,7 +109,7 @@ namespace OfficeTest
 
             mail.To = outlook.Session.CurrentUser.Address;
 
-            mail.Subject = Input["subject"].ToString();
+            mail.Subject = input["subject"].ToString();
 
             mail.Body = "This is a test";
 
@@ -140,22 +140,22 @@ namespace OfficeTest
         public void SendEmailTest()
         {
             Output = Runner.Run("StartOutlook");
-            Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
+            Assert.IsNull(Output.error, (Output.error == null) ? "" : "Error was: " + Output.error.msg);
 
             Output = Runner.Run("SendEmail", "{subject:'This is a test - email 1'}");
-            Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
+            Assert.IsNull(Output.error, (Output.error == null) ? "" : "Error was: " + Output.error.msg);
 
             Output = Runner.Run("SendEmail", "{subject:'This is a test - email 2'}");
-            Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
+            Assert.IsNull(Output.error, (Output.error == null) ? "" : "Error was: " + Output.error.msg);
 
             Output = Runner.Run("SendEmail", "{subject:'This is a test - email 3'}");
-            Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
+            Assert.IsNull(Output.error, (Output.error == null) ? "" : "Error was: " + Output.error.msg);
 
             Output = Runner.Run("ReadEmails", "{search:'This is a test'}");
-            Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
+            Assert.IsNull(Output.error, (Output.error == null) ? "" : "Error was: " + Output.error.msg);
 
             Output = Runner.Run("CloseOutlook");
-            Assert.IsNull(Output.Error, (Output.Error == null) ? "" : "Error was: " + Output.Error.Msg);
+            Assert.IsNull(Output.error, (Output.error == null) ? "" : "Error was: " + Output.error.msg);
         }
     }
 }

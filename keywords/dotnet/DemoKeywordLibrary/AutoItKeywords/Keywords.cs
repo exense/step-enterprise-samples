@@ -26,7 +26,7 @@ namespace AutoItTest
             return proc.MainWindowHandle;
         }
 
-        [Keyword(Name = "Open Notepad, edit and close")]
+        [Keyword(name = "Open Notepad, edit and close")]
         public void EditInNotepad()
         {
             IntPtr winHandle;
@@ -35,7 +35,7 @@ namespace AutoItTest
 
             if (AutoItX.WinWaitActive(winHandle, timeout: 10) != 1)
             {
-                Output.SetError("Error waiting for the Notepad window .");
+                output.SetError("Error waiting for the Notepad window .");
                 return;
             }
 
@@ -43,13 +43,13 @@ namespace AutoItTest
 
             if (AutoItX.WinKill(winHandle) != 1)
             {
-                Output.SetError("Error closing the Notepad window");
+                output.SetError("Error closing the Notepad window");
                 return;
             }
 
             if (AutoItX.WinWaitClose(winHandle, timeout: 10) != 1)
             {
-                Output.SetError("Error waiting for the Notepad window to close");
+                output.SetError("Error waiting for the Notepad window to close");
                 return;
             }
         }
@@ -75,7 +75,7 @@ namespace AutoItTest
         public void NotepadTest()
         {
             var output = Runner.Run("Open Notepad, edit and close", @"{}");
-            Assert.IsNull(output.Error, (output.Error == null) ? "" : "Error was: " + output.Error.Msg);
+            Assert.IsNull(output.error, (output.error == null) ? "" : "Error was: " + output.error.msg);
         }
     }
 }
