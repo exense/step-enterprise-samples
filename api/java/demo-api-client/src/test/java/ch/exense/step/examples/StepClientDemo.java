@@ -47,7 +47,7 @@ public class StepClientDemo {
 	private String controllerUrl = "http://controller.url";
 	private String user = "user";
 	private String password = "pwd";
-	
+
 	@Test
 	public void controllerClientDemo() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException {
 		try(StepClient client = new StepClient(controllerUrl, user, password)) {
@@ -247,12 +247,14 @@ public class StepClientDemo {
 		PlanParser planParser = new PlanParser();
 		// Parse the plan in plan text format
 		Plan plan = planParser.parse("For 1 to 3 \n" +
-									 	"MyCustomKeyword someInput=\"hello\" \n" +
-									 	"Assert yourStringInputWas = \"hello\" \n" +
-									 "End");
+				"MyCustomKeyword someInput=\"hello\" \n" +
+				"Assert yourStringInputWas = \"hello\" \n" +
+				"End");
 
+		//Instantiate a local client
 		StepClient client = new StepClient();
-		// Run the plan on the controller
+		
+		// Run the plan locally by pointing to the class(es) containing the required keyword(s)
 		PlanRunnerResult result = new LocalPlanRunner(MyCustomKeyword.class).run(plan);
 
 		// Wait for the plan execution to terminate and print the report tree to the standard output
