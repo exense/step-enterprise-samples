@@ -2,28 +2,43 @@
 using System.Collections.Generic;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using Step.Grid.IO;
-using Step.Handlers.NetHandler;
+using SeleniumCommons;
+using StepApi;
 
 namespace SeleniumTest
 {
     public class Keywords : AbstractKeyword
     {
+        [Keyword(name = "Open Chrome and search in Google")]
+        public void OpenChromeAndSearchInGoogle()
+        {
+            ChromeDriver driver = createDriver();
+            googleSearch(driver);
+            driver.Quit();
+        }
+
+
         [Keyword(name = "Open Chrome")]
         public void OpenChrome()
+        {
+            ChromeDriver driver = createDriver();
+
+            session.put("driver", new Wrapper(driver));
+        }
+
+        private ChromeDriver createDriver()
         {
             ChromeDriver driver = new ChromeDriver();
 
             ChromeOptions options = new ChromeOptions();
-            bool headless = Boolean.Parse(properties["headless"]);
-            if (headless)
+            if (properties.ContainsKey("headless") && Boolean.Parse(properties["headless"]))
             {
                 options.AddArguments(new string[] { "headless", "disable-infobars", "disable-gpu", "no-sandbox" });
             }
 
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 
-            session.Put("driver", new Wrapper(driver));
+            return driver;
         }
 
         [Keyword(name = "Navigate to URL")]
@@ -40,6 +55,11 @@ namespace SeleniumTest
         {
             IWebDriver driver = GetDriver();
 
+            googleSearch(driver);
+        }
+
+        private void googleSearch(IWebDriver driver)
+        {
             if (input["search"] != null)
             {
                 if (driver == null)
@@ -48,6 +68,8 @@ namespace SeleniumTest
                 }
 
                 driver.Url = "http://www.google.com";
+                
+                IWebElement searchInput = driver.FindElement(By.XPath("//input[@name='q']"));
 
                 IWebElement searchInput = driver.FindElement(By.Name("q"));
 
@@ -72,7 +94,6 @@ namespace SeleniumTest
                 throw new Exception("Input parameter 'search' not defined");
             }
         }
-
 
         private IWebDriver GetDriver()
         {

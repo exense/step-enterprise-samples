@@ -1,7 +1,8 @@
 package ch.exense.step.examples;
 
+import static step.planbuilder.BaseArtefacts.for_;
 import static step.planbuilder.BaseArtefacts.sequence;
-import static step.planbuilder.FunctionPlanBuilder.keywordById;
+import static step.planbuilder.FunctionArtefacts.keywordById;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import org.bson.types.ObjectId;
 import org.junit.Test;
 
 import junit.framework.Assert;
+import step.artefacts.Echo;
 import step.artefacts.reports.TestCaseReportNode;
 import step.attachments.FileResolver;
 import step.client.StepClient;
@@ -103,9 +105,9 @@ public class StepClientDemo {
 		PlanParser planParser = new PlanParser();
 		// Parse the plan in plan text format
 		Plan plan = planParser.parse("For 1 to 10 \n" +
-				"Echo 'HELLO' \n" +
-				"End");
-
+									 "Echo 'HELLO' \n" +
+									 "End");
+		
 		// Rename the plan
 		plan.getRoot().getAttributes().put("name", "My Testcase");
 
@@ -152,11 +154,22 @@ public class StepClientDemo {
 			result.waitForExecutionToTerminate().printTree();
 		}
 	}
-
+	
+	@Test
 	public void runAnExistingPlan() throws IOException, TimeoutException, InterruptedException {
 		try(StepClient client = new StepClient(controllerUrl, user, password)) {
+			// Create a plan
+			Plan plan = PlanBuilder.create()
+						.startBlock(for_(1, 10))
+							.add(new Echo())
+						.endBlock()
+						.build();
+			
+			// upload it to the controller
+			client.getPlanRepository().save(plan);
+			
 			// The ID of the plan to be executed
-			String planId = "theIdOfThePlanToBeExecuted";
+			String planId = plan.getId();
 
 			// Set the execution parameters (the drop-downs that are set on the execution screen in the UI)
 			Map<String, String> executionParameters = new HashMap<>();
