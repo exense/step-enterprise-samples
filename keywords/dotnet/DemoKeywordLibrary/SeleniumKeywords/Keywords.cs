@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using SeleniumCommons;
-using StepApi;
+using Step.Grid.IO;
+using Step.Handlers.NetHandler;
 
 namespace SeleniumTest
 {
@@ -12,8 +12,8 @@ namespace SeleniumTest
         [Keyword(name = "Open Chrome and search in Google")]
         public void OpenChromeAndSearchInGoogle()
         {
-            ChromeDriver driver = createDriver();
-            googleSearch(driver);
+            ChromeDriver driver = CreateDriver();
+            GoogleSearch(driver);
             driver.Quit();
         }
 
@@ -21,12 +21,12 @@ namespace SeleniumTest
         [Keyword(name = "Open Chrome")]
         public void OpenChrome()
         {
-            ChromeDriver driver = createDriver();
+            ChromeDriver driver = CreateDriver();
 
-            session.put("driver", new Wrapper(driver));
+            session.Put("driver", new Wrapper(driver));
         }
 
-        private ChromeDriver createDriver()
+        private ChromeDriver CreateDriver()
         {
             ChromeDriver driver = new ChromeDriver();
 
@@ -55,10 +55,10 @@ namespace SeleniumTest
         {
             IWebDriver driver = GetDriver();
 
-            googleSearch(driver);
+            GoogleSearch(driver);
         }
 
-        private void googleSearch(IWebDriver driver)
+        private void GoogleSearch(IWebDriver driver)
         {
             if (input["search"] != null)
             {
@@ -69,7 +69,7 @@ namespace SeleniumTest
 
                 driver.Url = "http://www.google.com";
                 
-                IWebElement searchInput = driver.FindElement(By.XPath("//input[@name='q']"));
+                //IWebElement searchInput = driver.FindElement(By.XPath("//input[@name='q']"));
 
                 IWebElement searchInput = driver.FindElement(By.Name("q"));
 
