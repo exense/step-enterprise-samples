@@ -7,6 +7,7 @@ import static step.planbuilder.FunctionArtefacts.keywordById;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,12 +21,14 @@ import org.junit.Test;
 
 import junit.framework.Assert;
 import step.artefacts.Echo;
+import step.artefacts.reports.CallFunctionReportNode;
 import step.artefacts.reports.TestCaseReportNode;
 import step.attachments.FileResolver;
 import step.client.StepClient;
 import step.client.executions.RemoteExecutionFuture;
 import step.client.repository.StagingRepositoryClient;
 import step.client.repository.StagingRepositoryClient.StagingContext;
+import step.core.artefacts.reports.ReportNode;
 import step.core.artefacts.reports.ReportNodeStatus;
 import step.core.dynamicbeans.DynamicValue;
 import step.core.plans.Plan;
@@ -39,7 +42,6 @@ import step.functions.type.FunctionTypeException;
 import step.functions.type.SetupFunctionException;
 import step.grid.TokenWrapper;
 import step.grid.tokenpool.Interest;
-import step.localrunner.LocalPlanRunner;
 import step.plans.nl.parser.PlanParser;
 import step.plugins.java.GeneralScriptFunction;
 import step.repositories.parser.StepsParser.ParsingException;
@@ -105,9 +107,9 @@ public class StepClientDemo {
 		PlanParser planParser = new PlanParser();
 		// Parse the plan in plan text format
 		Plan plan = planParser.parse("For 1 to 10 \n" +
-									 "Echo 'HELLO' \n" +
-									 "End");
-		
+				"Echo 'HELLO' \n" +
+				"End");
+
 		// Rename the plan
 		plan.getRoot().getAttributes().put("name", "My Testcase");
 
@@ -154,20 +156,20 @@ public class StepClientDemo {
 			result.waitForExecutionToTerminate().printTree();
 		}
 	}
-	
+
 	@Test
 	public void runAnExistingPlan() throws IOException, TimeoutException, InterruptedException {
 		try(StepClient client = new StepClient(controllerUrl, user, password)) {
 			// Create a plan
 			Plan plan = PlanBuilder.create()
-						.startBlock(for_(1, 10))
-							.add(new Echo())
-						.endBlock()
-						.build();
-			
+					.startBlock(for_(1, 10))
+					.add(new Echo())
+					.endBlock()
+					.build();
+
 			// upload it to the controller
 			client.getPlanRepository().save(plan);
-			
+
 			// The ID of the plan to be executed
 			String planId = plan.getId();
 
@@ -263,11 +265,28 @@ public class StepClientDemo {
 				"MyCustomKeyword someInput=\"hello\" \n" +
 				"Assert yourStringInputWas = \"hello\" \n" +
 				"End");
-	
-		// Run the plan locally by pointing to the class(es) containing the required keyword(s)
-		PlanRunnerResult result = new LocalPlanRunner(MyCustomKeyword.class).run(plan);
 
-		// Wait for the plan execution to terminate and print the report tree to the standard output
-		result.waitForExecutionToTerminate().printTree();
+		try(StepClient client = new StepClient(controllerUrl, user, password)) {
+			// Run the plan locally by pointing to the class(es) containing the required keyword(s)
+			PlanRunnerResult result = client.getPlanRunners().getLocalPlanRunner(
+					new HashMap<>(),
+					Arrays.asList(new Class[]{MyCustomKeyword.class}))
+					.run(plan);
+
+			// Wait for the plan execution to terminate and print the report tree in a custom way (replacing CallFunction with actuall Keyword name)
+			result.waitForExecutionToTerminate().visitReportTree(event->{
+				for(int i=0;i<event.getStack().size();i++) {
+					System.out.print(" ");
+				}
+				ReportNode node = event.getNode();
+				String nodeName = node.getName();
+				if(node instanceof CallFunctionReportNode) {
+					nodeName = ((CallFunctionReportNode)node).getFunctionAttributes().get("name");
+				}
+				System.out.print(nodeName+":"+node.getStatus()+":"+(node.getError()!=null?node.getError().getMsg():""));
+				System.out.print("\n");
+
+			});
+		}
 	}
 }
