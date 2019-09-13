@@ -1,4 +1,5 @@
 ﻿using AutoIt;
+using log4net;
 using NUnit.Framework;
 using Step.Handlers.NetHandler;
 using System;
@@ -8,6 +9,8 @@ namespace AutoItTest
 {
     public class Keywords : AbstractKeyword
     {
+        protected static readonly ILog logger = LogManager.GetLogger(typeof(Keywords));
+
         private IntPtr GetProcessHandel(int pid)
         {
             Process proc;
@@ -29,6 +32,8 @@ namespace AutoItTest
         [Keyword(name = "Open Notepad, edit and close")]
         public void EditInNotepad()
         {
+            logger.Info("Executing keyword 'EditInNotepad'");
+
             IntPtr winHandle;
             int pid = AutoItX.Run("notepad.exe", ".");
             winHandle = GetProcessHandel(pid);
