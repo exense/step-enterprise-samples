@@ -38,6 +38,7 @@ import step.functions.Function;
 import step.functions.execution.FunctionExecutionService;
 import step.functions.io.Input;
 import step.functions.io.Output;
+import step.functions.packages.FunctionPackage;
 import step.functions.type.FunctionTypeException;
 import step.functions.type.SetupFunctionException;
 import step.grid.TokenWrapper;
@@ -48,9 +49,9 @@ import step.repositories.parser.StepsParser.ParsingException;
 
 public class StepClientDemo {
 
-	private String controllerUrl = "http://controller.url";
-	private String user = "user";
-	private String password = "pwd";
+	private String controllerUrl = "http://step-enterprise-nightly.exense.ch";
+	private String user = "admin";
+	private String password = "100%NIGHTLY";
 
 	@Test
 	public void controllerClientDemo() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException {
@@ -287,6 +288,27 @@ public class StepClientDemo {
 				System.out.print("\n");
 
 			});
+		}
+	}
+
+	@Test
+	public void keywordPackageDemo() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException, ParsingException {
+		try(StepClient client = new StepClient(controllerUrl, user, password)) {
+			Map<String,String> attributes = new HashMap<>();
+			attributes.put("version", "1234");
+			attributes.put("attributes.name", "myPackageName2");
+
+			try {
+				//Upload new function package
+				FunctionPackage myKwPackage = 
+						client.getFunctionPackageClient()
+						.newKeywordPackage(
+								null,
+								new File("src/test/resources/ch/exense/step/examples/demo-java-keyword-0.0.1.jar"),
+								attributes);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
