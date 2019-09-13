@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using log4net;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using Step.Grid.IO;
@@ -9,6 +10,11 @@ namespace SeleniumTest
 {
     public class Keywords : AbstractKeyword
     {
+        /**
+         * see the file AssemblyInfo.cs for needed configuration
+         */
+        protected static readonly ILog logger = LogManager.GetLogger(typeof(Keywords));
+
         [Keyword(name = "Open Chrome and search in Google")]
         public void OpenChromeAndSearchInGoogle()
         {
@@ -28,6 +34,8 @@ namespace SeleniumTest
 
         private ChromeDriver CreateDriver()
         {
+            logger.Info("Creating a Chrome Driver");
+
             ChromeDriver driver = new ChromeDriver();
 
             ChromeOptions options = new ChromeOptions();

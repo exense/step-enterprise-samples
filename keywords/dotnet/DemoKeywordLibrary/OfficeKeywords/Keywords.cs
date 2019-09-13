@@ -5,11 +5,17 @@ using System.Linq;
 using System;
 using Step.Handlers.NetHandler;
 using Step.Functions.IO;
+using log4net;
 
 namespace OfficeTest
 {
     public class Keywords : AbstractKeyword
     {
+        /**
+         * see the file AssemblyInfo.cs for needed configuration
+         */
+        protected static readonly ILog logger = LogManager.GetLogger(typeof(Keywords));
+
         private Outlook.Application GetApplication()
         {
             Type outlookType = Type.GetTypeFromProgID("Outlook.Application");
@@ -24,11 +30,13 @@ namespace OfficeTest
         [Keyword]
         public void StartOutlook()
         {
+            logger.Info("Trying to start Outlook");
             if (Process.GetProcessesByName("OUTLOOK").Count() == 0)
             {
                 Outlook.Application outlook;
                 if ((outlook = GetApplication()) == null)
                 {
+                    logger.Error("Outlook is not installed on this agent");
                     output.SetBusinessError("Outlook seems to not be installed on this machine. Aborting");
                     return;
                 }

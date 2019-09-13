@@ -9,6 +9,9 @@ namespace AutoItTest
 {
     public class Keywords : AbstractKeyword
     {
+        /**
+         * see the file AssemblyInfo.cs for needed configuration
+         */
         protected static readonly ILog logger = LogManager.GetLogger(typeof(Keywords));
 
         private IntPtr GetProcessHandel(int pid)
