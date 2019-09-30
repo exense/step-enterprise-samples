@@ -49,9 +49,9 @@ import step.repositories.parser.StepsParser.ParsingException;
 
 public class StepClientDemo {
 
-	private String controllerUrl = "http://step-enterprise-nightly.exense.ch";
-	private String user = "admin";
-	private String password = "100%NIGHTLY";
+	private String controllerUrl = "controller.url";
+	private String user = "user";
+	private String password = "password";
 
 	@Test
 	public void controllerClientDemo() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException {
@@ -306,6 +306,10 @@ public class StepClientDemo {
 								null,
 								new File("src/test/resources/ch/exense/step/examples/demo-java-keyword-0.0.1.jar"),
 								attributes);
+				
+				client.getFunctionPackageClient().deleteKeywordPackage(myKwPackage.getId().toString());
+				
+				
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
