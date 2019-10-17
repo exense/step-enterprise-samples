@@ -17,9 +17,9 @@ import javax.json.Json;
 import javax.json.JsonObject;
 
 import org.bson.types.ObjectId;
+import org.junit.Assert;
 import org.junit.Test;
 
-import junit.framework.Assert;
 import step.artefacts.Echo;
 import step.artefacts.reports.CallFunctionReportNode;
 import step.artefacts.reports.TestCaseReportNode;
@@ -47,11 +47,16 @@ import step.plans.nl.parser.PlanParser;
 import step.plugins.java.GeneralScriptFunction;
 import step.repositories.parser.StepsParser.ParsingException;
 
+
 public class StepClientDemo {
 
 	private String controllerUrl = "controller.url";
 	private String user = "user";
 	private String password = "password";
+	
+//	private String controllerUrl = "http://localhost:8080";
+//	private String user = "admin";
+//	private String password = "init";
 
 	@Test
 	public void controllerClientDemo() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException {
@@ -292,7 +297,7 @@ public class StepClientDemo {
 	}
 
 	@Test
-	public void keywordPackageDemo() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException, ParsingException {
+	public void keywordPackageCreationAndDeletion() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException, ParsingException {
 		try(StepClient client = new StepClient(controllerUrl, user, password)) {
 			Map<String,String> attributes = new HashMap<>();
 			attributes.put("version", "1234");
@@ -306,13 +311,107 @@ public class StepClientDemo {
 								null,
 								new File("src/test/resources/ch/exense/step/examples/demo-java-keyword-0.0.1.jar"),
 								attributes);
-				
+
 				client.getFunctionPackageClient().deleteKeywordPackage(myKwPackage.getId().toString());
-				
-				
+
 			}catch(Exception e) {
 				e.printStackTrace();
 			}
+		}
+	}
+
+	@Test
+	public void idBasedKeywordPackageCreationAndUpdate() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException, ParsingException {
+		try(StepClient client = new StepClient(controllerUrl, user, password)) {
+			Map<String,String> attributes = new HashMap<>();
+			attributes.put("version", "1234");
+			attributes.put("attributes.name", "myPackageName2");
+
+			try {
+				FunctionPackage myKwPackage = client.getFunctionPackageClient()
+						.newKeywordPackage(
+								null,
+								new File("src/test/resources/ch/exense/step/examples/demo-java-keyword-0.0.1.jar"),
+								attributes);
+
+				client.getFunctionPackageClient()
+				.updateKeywordPackageById(
+						myKwPackage,
+						null,
+						new File("src/test/resources/ch/exense/step/examples/demo-java-keyword-0.0.1.jar"),
+						attributes);
+
+				// Only one copy of the KeywordPackage, Keywords and Resource have been created and updated.
+
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Test
+	public void resourceBasedKeywordPackageCreationAndUpdate() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException, ParsingException {
+		try(StepClient client = new StepClient(controllerUrl, user, password)) {
+			Map<String,String> attributes = new HashMap<>();
+			attributes.put("version", "1234");
+			attributes.put("attributes.name", "myPackageName2");
+
+			for(int i=0; i<2; i++) {
+				try {
+					//Upload new function package
+					FunctionPackage myKwPackage = 
+							client.getFunctionPackageClient()
+							.updateResourceBasedKeywordPackage(
+									null,
+									new File("src/test/resources/ch/exense/step/examples/demo-java-keyword-0.0.1.jar"),
+									attributes);
+
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			// Only one keyword package is present on the server.
+		}
+	}
+
+	@Test
+	public void multipleKeywordPackagesWithResourceBasedCleanup() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException, ParsingException {
+		try(StepClient client = new StepClient(controllerUrl, user, password)) {
+			Map<String,String> attributes = new HashMap<>();
+			attributes.put("version", "1234");
+			attributes.put("attributes.name", "myPackageName2");
+
+			for(int i=0; i<2; i++) {
+				try {
+					//Upload new function package
+					FunctionPackage myKwPackage = 
+							client.getFunctionPackageClient()
+							.newKeywordPackage(
+									null,
+									new File("src/test/resources/ch/exense/step/examples/demo-java-keyword-0.0.1.jar"),
+									attributes);
+
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			// two keyword packages are created with the same resource name but different id's (i.e copies).
+
+			for(int i=0; i<2; i++) {
+				try {
+					FunctionPackage myKwPackage = 
+							client.getFunctionPackageClient()
+							.lookupPackageByResourceName("demo-java-keyword-0.0.1.jar");
+
+					client.getFunctionPackageClient().deleteKeywordPackage(myKwPackage.getId().toString());
+				}catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+			// We cleaned up both copies via resourceName
 		}
 	}
 }
