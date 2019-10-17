@@ -10,7 +10,7 @@ In order to use the Java samples, you will then be able to connect to our privat
 ```xml
 <servers>
 	<server>
-		<id>step-enterprise-nexus</id>
+		<id>nexus-exense</id>
 		<username>your_step_enterprise_username</username>
 		<password>password</password>
 	</server>
