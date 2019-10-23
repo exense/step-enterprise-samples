@@ -16,6 +16,7 @@ namespace AutoItTest
 
         private IntPtr GetProcessHandel(int pid)
         {
+            output.StartMeasure("GetProcessHandel");
             Process proc;
             try
             {
@@ -29,6 +30,7 @@ namespace AutoItTest
             {
                 return new IntPtr(0);
             }
+            output.StopMeasure();
             return proc.MainWindowHandle;
         }
 
@@ -36,7 +38,6 @@ namespace AutoItTest
         public void EditInNotepad()
         {
             logger.Info("Executing keyword 'EditInNotepad'");
-
             IntPtr winHandle;
             int pid = AutoItX.Run("notepad.exe", ".");
             winHandle = GetProcessHandel(pid);

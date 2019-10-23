@@ -15,7 +15,7 @@ namespace SeleniumTest
          */
         protected static readonly ILog logger = LogManager.GetLogger(typeof(Keywords));
 
-        [Keyword(name = "Open Chrome and search in Google")]
+        [Keyword(name = "Open_Chrome_and_search_in_Google")]
         public void OpenChromeAndSearchInGoogle()
         {
             ChromeDriver driver = CreateDriver();
@@ -24,7 +24,7 @@ namespace SeleniumTest
         }
 
 
-        [Keyword(name = "Open Chrome")]
+        [Keyword(name = "Open_Chrome")]
         public void OpenChrome()
         {
             ChromeDriver driver = CreateDriver();
@@ -49,7 +49,7 @@ namespace SeleniumTest
             return driver;
         }
 
-        [Keyword(name = "Navigate to URL")]
+        [Keyword(name = "Navigate_to_URL", properties = new string[] { "url_exense" })]
         public void Navigate()
         {
             IWebDriver driver = GetDriver();
@@ -58,7 +58,7 @@ namespace SeleniumTest
             output.StopMeasure();
         }
 
-        [Keyword(name = "Search in google")]
+        [Keyword(name = "Search_in_google")]
         public void SearchInGoogle()
         {
             IWebDriver driver = GetDriver();
