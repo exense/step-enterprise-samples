@@ -36,7 +36,7 @@ import step.core.plans.builder.PlanBuilder;
 import step.core.plans.runner.PlanRunnerResult;
 import step.functions.Function;
 import step.functions.execution.FunctionExecutionService;
-import step.functions.io.Input;
+import step.functions.io.FunctionInput;
 import step.functions.io.Output;
 import step.functions.packages.FunctionPackage;
 import step.functions.type.FunctionTypeException;
@@ -50,13 +50,13 @@ import step.repositories.parser.StepsParser.ParsingException;
 
 public class StepClientDemo {
 
-	private String controllerUrl = "controller.url";
-	private String user = "user";
-	private String password = "password";
+//	private String controllerUrl = "controller.url";
+//	private String user = "user";
+//	private String password = "password";
 	
-//	private String controllerUrl = "http://localhost:8080";
-//	private String user = "admin";
-//	private String password = "init";
+	private String controllerUrl = "http://localhost:8080";
+	private String user = "admin";
+	private String password = "init";
 
 	@Test
 	public void controllerClientDemo() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException {
@@ -205,23 +205,22 @@ public class StepClientDemo {
 
 			// Select an agent token from the GRID
 			Map<String, Interest> tokenSelectionCriteria = new HashMap<>();
-			TokenWrapper tokenHandle = functionExecutionService.getTokenHandle(null, tokenSelectionCriteria, true);
+			TokenWrapper tokenHandle = functionExecutionService.getTokenHandle(null, tokenSelectionCriteria, true, null);
 
 			try {
 				// Build the input object
-				Input<JsonObject> input = new Input<JsonObject>();
+				FunctionInput<JsonObject> input = new FunctionInput<JsonObject>();
 				// Set the name of the Keyword
-				input.setFunction("Echo");
 				input.setProperties(new HashMap<>());
 				input.setPayload(Json.createObjectBuilder().build());
-
+				
 				// call the keyword executing it on the remote agent
-				Output<JsonObject> result = functionExecutionService.callFunction(tokenHandle, keyword, input, JsonObject.class);
+				Output<JsonObject> result = functionExecutionService.callFunction(tokenHandle.getID(), keyword, input, JsonObject.class);
 				// Assert that the Keyword has been executed properly
 				Assert.assertEquals("OK :)", result.getPayload().getString("Result"));			
 			} finally {
 				// Return the agent token to the GRID
-				functionExecutionService.returnTokenHandle(tokenHandle);
+				functionExecutionService.returnTokenHandle(tokenHandle.getID());
 			}
 		}
 	}

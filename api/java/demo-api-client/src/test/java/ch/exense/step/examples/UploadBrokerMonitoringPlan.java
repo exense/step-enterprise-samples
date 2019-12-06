@@ -7,11 +7,11 @@ import java.util.concurrent.TimeoutException;
 
 import org.junit.Test;
 
+import ch.exense.step.examples.helper.StepClientCustom;
 import junit.framework.Assert;
 import step.artefacts.Script;
 import step.artefacts.Sequence;
 import step.artefacts.Set;
-import step.client.StepClient;
 import step.client.executions.RemoteExecutionFuture;
 import step.core.artefacts.reports.ReportNodeStatus;
 import step.core.dynamicbeans.DynamicValue;
@@ -30,16 +30,17 @@ public class UploadBrokerMonitoringPlan {
 	@Test
 	public void uploadBrokerMonitoringPlan() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException {
 		
-		try(StepClient client = new StepClient(runPlanOnController, "admin", "init")) {
+		try(StepClientCustom client = new StepClientCustom(runPlanOnController, "admin", "init")) {
 			
 			/*** Implement the blocks of our monitoring plan in pure groovy ***/
 			
 			// Call broker service
+			
 			Set response = new Set();
 			response.setKey(new DynamicValue<String>("response"));
 			DynamicValue<String> urlCallValue = new DynamicValue<String>();
 			urlCallValue.setDynamic(true);
-			urlCallValue.setExpression("new URL(\""+monitoredController + brokerServiceURL+"\").text");
+			urlCallValue.setExpression("new URL(\""+monitoredController + brokerServiceURL+"\").getText(requestProperties: [Cookie: \"" + client.getCookies() + "\"])");
 			response.setValue(urlCallValue);
 			response.setDescription("Set - call service");
 			
