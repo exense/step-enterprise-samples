@@ -48,14 +48,14 @@
     <Reference Include="nunit.framework, Version=3.12.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.3.12.0\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="StepApiFunction, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\StepApiFunction.1.0.0\lib\net46\StepApiFunction.dll</HintPath>
+    <Reference Include="StepApiFunction, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StepApiFunction.1.1.0\lib\net46\StepApiFunction.dll</HintPath>
     </Reference>
-    <Reference Include="StepApiKeyword, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\StepApiKeyword.1.0.0\lib\net46\StepApiKeyword.dll</HintPath>
+    <Reference Include="StepApiKeyword, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StepApiKeyword.1.1.0\lib\net46\StepApiKeyword.dll</HintPath>
     </Reference>
-    <Reference Include="StepApiReporting, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\StepApiReporting.1.0.0\lib\net46\StepApiReporting.dll</HintPath>
+    <Reference Include="StepApiReporting, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\StepApiReporting.1.1.0\lib\net46\StepApiReporting.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
