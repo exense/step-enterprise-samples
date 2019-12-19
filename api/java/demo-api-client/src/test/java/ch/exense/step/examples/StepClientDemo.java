@@ -45,6 +45,7 @@ import step.grid.TokenWrapper;
 import step.grid.tokenpool.Interest;
 import step.plans.nl.parser.PlanParser;
 import step.plugins.java.GeneralScriptFunction;
+import step.reporting.JUnit4ReportWriter;
 import step.repositories.parser.StepsParser.ParsingException;
 
 
@@ -123,8 +124,11 @@ public class StepClientDemo {
 			// Run the plan on the controller
 			PlanRunnerResult result = client.getPlanRunners().getRemotePlanRunner().run(plan);
 
-			// Wait for the plan execution to terminate and print the report tree to the standard output
-			result.waitForExecutionToTerminate().printTree();
+			// Wait for the plan execution to terminate and generate a JUnit report
+			result.waitForExecutionToTerminate().writeReport(new JUnit4ReportWriter(), new File("report.xml"));
+			
+			// The following would print the report tree to the standard output instead of generating a JUnit report
+			// result.waitForExecutionToTerminate().printTree();
 		}
 	}
 
