@@ -137,7 +137,6 @@ namespace OfficeTest
             Runner = KeywordRunner.GetExecutionContext(typeof(Keywords));
         }
         
-
         [Fact(Skip = "build")]
         public void SendEmailTest()
         {

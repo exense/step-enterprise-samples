@@ -73,7 +73,7 @@ namespace AutoItTest
             Runner = KeywordRunner.GetExecutionContext(typeof(Keywords));
         }
 
-        [Fact]
+        [Fact(Skip = "build")]
         public void NotepadTest()
         {
             var output = Runner.Run("Open Notepad, edit and close", @"{}");

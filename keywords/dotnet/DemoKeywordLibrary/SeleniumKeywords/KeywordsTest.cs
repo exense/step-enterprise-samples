@@ -14,8 +14,8 @@ namespace SeleniumTest
         {
             Runner = KeywordRunner.GetExecutionContext(typeof(Keywords));
         }
-        
-        [Fact]
+
+        [Fact(Skip = "build")]
         public void OpenChromeTest()
         {
             Output = Runner.Run("Open_Chrome", @"{}", new Dictionary<string, string>() { { "headless", @"false" } });
