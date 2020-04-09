@@ -1,0 +1,36 @@
+{
+	"NAME": "Step Enterprise Samples",
+	"OS": "WINDOWS",
+	
+	"SUBPROJECTS":
+	{
+		"TYPE":		["POM","SLN"],
+		"FOLDER":	[
+      "api/java/demo-api-client/",
+      "keywords/dotnet/DemoKeywordLibrary/"
+    ],
+		
+		"URL_STAGING":	[ 
+			"nexus-staging::https://nexus-enterprise.exense.ch/repository/staging-maven/",
+			"https://nexus-enterprise.exense.ch/repository/staging-nuget/"
+		],
+		"URL_PROD":		[ 
+			"sonatype::https://oss.sonatype.org/service/local/staging/deploy/maven2",
+			"https://nexus-enterprise.exense.ch/repository/exense-nuget/"
+		],
+		
+		"CONFIG_STAGING": [ "DefaultBuild","Debug"],
+		"CONFIG_PROD":    [ "DefaultBuild","Release"]
+	},
+	"DISTRIBUTIONS":
+	{
+		"TYPE": ["GITHUB"],
+		
+		"ORIGIN_FILE": [
+      "keywords/soapui/Demo_soapui-project.xml"
+    ],
+		"DESTINATION_NAME": [
+      "Demo_soapui-project.xml"
+    ]
+	}
+}
