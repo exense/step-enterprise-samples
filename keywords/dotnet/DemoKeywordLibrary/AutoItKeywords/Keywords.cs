@@ -1,9 +1,9 @@
 ﻿using AutoIt;
 using log4net;
-using NUnit.Framework;
 using Step.Handlers.NetHandler;
 using System;
 using System.Diagnostics;
+using Xunit;
 
 namespace AutoItTest
 {
@@ -64,27 +64,25 @@ namespace AutoItTest
         }
     }
 
-    public class AutoItKeywordsTests
+    public class AutoItKeywordsTests : IDisposable
     {
         ExecutionContext Runner;
 
-        [SetUp]
-        public void Init()
+        public AutoItKeywordsTests()
         {
             Runner = KeywordRunner.GetExecutionContext(typeof(Keywords));
         }
 
-        [TearDown]
-        public void TearDown()
-        {
-            Runner.Close();
-        }
-
-        [TestCase()]
+        [Fact]
         public void NotepadTest()
         {
             var output = Runner.Run("Open Notepad, edit and close", @"{}");
-            Assert.IsNull(output.error, (output.error == null) ? "" : "Error was: " + output.error.msg);
+            Assert.Null(output.error);
+        }
+
+        public void Dispose()
+        {
+            Runner.Close();
         }
     }
 }

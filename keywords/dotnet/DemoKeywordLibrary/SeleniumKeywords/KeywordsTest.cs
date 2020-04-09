@@ -1,36 +1,34 @@
-﻿using NUnit.Framework;
-using Step.Functions.IO;
+﻿using Step.Functions.IO;
 using Step.Handlers.NetHandler;
+using System;
 using System.Collections.Generic;
+using Xunit;
 
 namespace SeleniumTest
 {
-    public class KeywordsTests
+    public class KeywordsTests : IDisposable
     {
         ExecutionContext Runner;
         Output Output;
-
-        [SetUp]
-        public void Init()
+        public KeywordsTests()
         {
             Runner = KeywordRunner.GetExecutionContext(typeof(Keywords));
         }
-
-        [TearDown]
-        public void TearDown()
-        {
-            Runner.Close();
-        }
-
-        [TestCase()]
+        
+        [Fact]
         public void OpenChromeTest()
         {
-            Output = Runner.Run("Open Chrome", @"{}", new Dictionary<string, string>() { { "headless", @"false" } });
-            Assert.IsNull(Output.error, (Output.error == null) ? "" : "Error was: " + Output.error.msg);
+            Output = Runner.Run("Open_Chrome", @"{}", new Dictionary<string, string>() { { "headless", @"false" } });
+            Assert.Null(Output.error);
 
-            Output = Runner.Run("Search in google", @"{search:'exense'}");
-            Assert.IsNull(Output.error, (Output.error == null) ? "" : "Error was: " + Output.error.msg);
-            Assert.AreEqual("https://www.exense.ch", (string)Output.payload["exense: Home"]);
+            Output = Runner.Run("Search_in_google", @"{search:'exense'}");
+            Assert.Null(Output.error);
+            Assert.Equal("www.exense.ch", (string)Output.payload["exense: Home"]);
+        }
+
+        public void Dispose()
+        {
+            Runner.Close();
         }
     }
 }

@@ -1,11 +1,11 @@
-﻿using NUnit.Framework;
-using Outlook = Microsoft.Office.Interop.Outlook;
+﻿using Outlook = Microsoft.Office.Interop.Outlook;
 using System.Diagnostics;
 using System.Linq;
 using System;
 using Step.Handlers.NetHandler;
 using Step.Functions.IO;
 using log4net;
+using Xunit;
 
 namespace OfficeTest
 {
@@ -111,7 +111,7 @@ namespace OfficeTest
 
             outlook.NewMail += new Outlook.ApplicationEvents_11_NewMailEventHandler(MailReceived);
             received = false;
-            Outlook.MailItem mail = outlook.CreateItem(Outlook.OlItemType.olMailItem);
+            Outlook.MailItem mail = (Outlook.MailItem) outlook.CreateItem(Outlook.OlItemType.olMailItem);
 
             mail.Display();
 
@@ -127,43 +127,42 @@ namespace OfficeTest
         }
     }
 
-    public class KeywordsTests
+    public class KeywordsTests : IDisposable
     {
         ExecutionContext Runner;
         Output Output;
 
-        [SetUp]
-        public void Init()
+        public KeywordsTests()
         {
             Runner = KeywordRunner.GetExecutionContext(typeof(Keywords));
         }
         
-        [TearDown]
-        public void TearDown()
-        {
-            Runner.Close();
-        }
 
-        [TestCase()]
+        [Fact]
         public void SendEmailTest()
         {
             Output = Runner.Run("StartOutlook");
-            Assert.IsNull(Output.error, (Output.error == null) ? "" : "Error was: " + Output.error.msg);
+            Assert.Null(Output.error);
 
             Output = Runner.Run("SendEmail", "{subject:'This is a test - email 1'}");
-            Assert.IsNull(Output.error, (Output.error == null) ? "" : "Error was: " + Output.error.msg);
+            Assert.Null(Output.error);
 
             Output = Runner.Run("SendEmail", "{subject:'This is a test - email 2'}");
-            Assert.IsNull(Output.error, (Output.error == null) ? "" : "Error was: " + Output.error.msg);
+            Assert.Null(Output.error);
 
             Output = Runner.Run("SendEmail", "{subject:'This is a test - email 3'}");
-            Assert.IsNull(Output.error, (Output.error == null) ? "" : "Error was: " + Output.error.msg);
+            Assert.Null(Output.error);
 
             Output = Runner.Run("ReadEmails", "{search:'This is a test'}");
-            Assert.IsNull(Output.error, (Output.error == null) ? "" : "Error was: " + Output.error.msg);
+            Assert.Null(Output.error);
 
             Output = Runner.Run("CloseOutlook");
-            Assert.IsNull(Output.error, (Output.error == null) ? "" : "Error was: " + Output.error.msg);
+            Assert.Null(Output.error);
+        }
+
+        public void Dispose()
+        {
+            Runner.Close();
         }
     }
 }

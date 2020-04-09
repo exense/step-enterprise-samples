@@ -36,13 +36,13 @@ namespace SeleniumTest
         {
             logger.Info("Creating a Chrome Driver");
 
-            ChromeDriver driver = new ChromeDriver();
-
             ChromeOptions options = new ChromeOptions();
             if (properties.ContainsKey("headless") && Boolean.Parse(properties["headless"]))
             {
                 options.AddArguments(new string[] { "headless", "disable-infobars", "disable-gpu", "no-sandbox" });
             }
+
+            ChromeDriver driver = new ChromeDriver(options);
 
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
 
@@ -76,7 +76,8 @@ namespace SeleniumTest
                 }
 
                 driver.Url = "http://www.google.com";
-                
+                driver.Navigate();
+
                 //IWebElement searchInput = driver.FindElement(By.XPath("//input[@name='q']"));
 
                 IWebElement searchInput = driver.FindElement(By.Name("q"));
