@@ -50,15 +50,11 @@ import step.repositories.parser.StepsParser.ParsingException;
 
 
 public class StepClientDemo {
-
-//	private String controllerUrl = "controller.url";
-//	private String user = "user";
-//	private String password = "password";
 	
 	private String controllerUrl = "http://localhost:8080";
 	private String user = "admin";
 	private String password = "init";
-
+	
 	@Test
 	public void controllerClientDemo() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException {
 		try(StepClient client = new StepClient(controllerUrl, user, password)) {
@@ -74,10 +70,10 @@ public class StepClientDemo {
 					.build();
 
 			// Upload the plan to the controller
-			client.getPlanRepository().save(plan);
-
+			client.getPlans().save(plan);
+			
 			// Execute the plan on the controller
-			String executionId = client.getExecutionManager().execute(plan.getId());
+			String executionId = client.getExecutionManager().execute(plan.getId().toString());
 
 			RemoteExecutionFuture future = client.getExecutionManager().getFuture(executionId);
 
@@ -178,11 +174,11 @@ public class StepClientDemo {
 					.build();
 
 			// upload it to the controller
-			client.getPlanRepository().save(plan);
+			client.getPlans().save(plan);
 
 			// The ID of the plan to be executed
-			String planId = plan.getId();
-
+			String planId = plan.getId().toString();
+			
 			// Set the execution parameters (the drop-downs that are set on the execution screen in the UI)
 			Map<String, String> executionParameters = new HashMap<>();
 			executionParameters.put("env", "TEST");
@@ -281,7 +277,7 @@ public class StepClientDemo {
 					new HashMap<>(),
 					Arrays.asList(new Class[]{MyCustomKeyword.class}))
 					.run(plan);
-
+			
 			// Wait for the plan execution to terminate and print the report tree in a custom way (replacing CallFunction with actuall Keyword name)
 			result.waitForExecutionToTerminate().visitReportTree(event->{
 				for(int i=0;i<event.getStack().size();i++) {
@@ -362,8 +358,7 @@ public class StepClientDemo {
 			for(int i=0; i<2; i++) {
 				try {
 					//Upload new function package
-					FunctionPackage myKwPackage = 
-							client.getFunctionPackageClient()
+					client.getFunctionPackageClient()
 							.updateResourceBasedKeywordPackage(
 									null,
 									new File("src/test/resources/ch/exense/step/examples/demo-java-keyword-0.0.1.jar"),
@@ -388,8 +383,7 @@ public class StepClientDemo {
 			for(int i=0; i<2; i++) {
 				try {
 					//Upload new function package
-					FunctionPackage myKwPackage = 
-							client.getFunctionPackageClient()
+					client.getFunctionPackageClient()
 							.newKeywordPackage(
 									null,
 									new File("src/test/resources/ch/exense/step/examples/demo-java-keyword-0.0.1.jar"),
