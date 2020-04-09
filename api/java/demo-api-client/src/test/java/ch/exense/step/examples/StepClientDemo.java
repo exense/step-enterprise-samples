@@ -28,6 +28,7 @@ import step.client.StepClient;
 import step.client.executions.RemoteExecutionFuture;
 import step.client.repository.StagingRepositoryClient;
 import step.client.repository.StagingRepositoryClient.StagingContext;
+import step.controller.multitenancy.Tenant;
 import step.core.artefacts.reports.ReportNode;
 import step.core.artefacts.reports.ReportNodeStatus;
 import step.core.dynamicbeans.DynamicValue;
@@ -58,7 +59,7 @@ public class StepClientDemo {
 	@Test
 	public void controllerClientDemo() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException {
 		try(StepClient client = new StepClient(controllerUrl, user, password)) {
-
+			
 			// Create a DemoKeyword (javascript) and upload it to the controller
 			Function keyword = uploadDemoKeyword(client);
 
@@ -104,7 +105,16 @@ public class StepClientDemo {
 			result.waitForExecutionToTerminate().printTree();
 		}
 	}
-
+	
+	@Test
+	public void listAndSelectTenants() throws Exception {
+		try(StepClient client = new StepClient(controllerUrl, user, password)) {
+			List<Tenant> projects = client.getAvailableTenants();
+			
+			client.selectTenant(projects.get(0).getName());
+		}
+	}
+	
 	@Test
 	public void planParserDemo() throws SetupFunctionException, FunctionTypeException, IOException, TimeoutException, InterruptedException, ParsingException {
 		PlanParser planParser = new PlanParser();
