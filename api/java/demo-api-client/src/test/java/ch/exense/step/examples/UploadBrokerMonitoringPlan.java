@@ -96,10 +96,10 @@ public class UploadBrokerMonitoringPlan {
 					.build();
 
 			// Upload the plan to the controller
-			client.getPlanRepository().save(plan);
+			client.getPlans().save(plan);
 
 			// Execute the plan on the controller
-			String executionId = client.getExecutionManager().execute(plan.getId());
+			String executionId = client.getExecutionManager().execute(plan.getId().toString());
 			
 			RemoteExecutionFuture future = client.getExecutionManager().getFuture(executionId);
 

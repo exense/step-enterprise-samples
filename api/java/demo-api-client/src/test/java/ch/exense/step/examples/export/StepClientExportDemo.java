@@ -8,9 +8,8 @@ import org.junit.Test;
 
 import step.client.StepClient;
 import step.core.artefacts.AbstractArtefact;
-import step.core.artefacts.ArtefactAccessor;
 import step.core.plans.Plan;
-import step.core.plans.PlanRepository;
+import step.core.plans.PlanAccessor;
 import step.functions.Function;
 import step.functions.manager.FunctionManager;
 import step.functions.type.FunctionTypeException;
@@ -25,11 +24,11 @@ public class StepClientExportDemo {
 		try(StepClient originControllerClient = new StepClient("https://step-public-demo.stepcloud.ch", "admin", "public");
 			StepClient targetControllerClient = new StepClient("http://...", "admin", "init");) {
 			
-			ArtefactAccessor originArtefactAccessor = originControllerClient.getRemoteAccessors().getArtefactAccessor();
-			PlanRepository originPlanRepository = originControllerClient.getPlanRepository();
+			PlanAccessor originPlanAccessor = originControllerClient.getPlans();
+			//PlanRepository originPlanRepository = originControllerClient.getPlans();
 			FunctionManager originFunctionManager = originControllerClient.getFunctionManager();
 
-			PlanRepository targetPlanRepository = targetControllerClient.getPlanRepository();
+			PlanAccessor targetPlanRepository = targetControllerClient.getPlans();
 			FunctionManager targetFunctionManager = targetControllerClient.getFunctionManager();
 			
 			HashMap<String, String> attributes = new HashMap<>();
@@ -40,12 +39,9 @@ public class StepClientExportDemo {
 			if(function instanceof CompositeFunction) {
 				CompositeFunction compositeFunction = (CompositeFunction) function;
 				
-				// get the ID of the root artefact of the composite plan
-				String rootArtefactId = compositeFunction.getArtefactId();
-				// get the root artefact of the composite plan
-				AbstractArtefact rootArtefact = originArtefactAccessor.get(rootArtefactId);
-				// get the composite plan (loads the artefact node recursively)
-				Plan compositePlan = originPlanRepository.load(rootArtefact.getAttributes());
+				// get the ID of the composite plan
+				String planId = compositeFunction.getPlanId();
+				Plan compositePlan = originPlanAccessor .get(planId);
 				
 				// save the composite function to the target controller
 				targetFunctionManager.saveFunction(compositeFunction);
