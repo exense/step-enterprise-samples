@@ -3,6 +3,7 @@ This project demonstrates the usage of the advanced fonctionalities of the entre
 
 ## Usage
 First of all, you will need the [enterprise version of Step](https://step.exense.ch/pricing/). Do not hesitate to [contact us](https://step.exense.ch/contact/) for more information.
+
 ### Java samples
 
 In order to use the Java samples, you will then be able to connect to our private nexus by configuring your maven settings.xml as follow:
